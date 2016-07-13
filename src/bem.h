@@ -29,8 +29,8 @@ struct TorsionBemCase
     void run();
     double get_polar_moment();
     double get_torsion_moment();
-    double get_w(Vector point);
-    Vector get_stress(Vector point);
+    double get_w(std::array<double, 2> point);
+    Vector get_stress(std::array<double, 2> point);
 };
 
 #endif

@@ -68,32 +68,34 @@ void TorsionBemCase::run()
     this->sol = mat.lu().solve(rhs);
 }
 
-double TorsionBemCase::get_w(Vector point)
+double TorsionBemCase::get_w(std::array<double, 2> point)
 {
+    Vector p(point[0], point[1]);
     std::tuple<double, double> infl;
     double t = 0;
     int i = 0;
     
     for (auto panel: this->panels)
     {
-        infl = panel->get_influence(point);
+        infl = panel->get_influence(p);
         t += std::get<0>(infl) * this->sol[i] - std::get<1>(infl);
         i++;
     }
     return t;
 }
 
-Vector TorsionBemCase::get_stress(Vector point)
+Vector TorsionBemCase::get_stress(std::array<double, 2> point)
 {
+    Vector p(point[0], point[1]);
     std::tuple<Vector, Vector> infl;
     Vector q(0, 0);
     int i = 0;
     
     for (auto panel: this->panels)
     {
-        infl = panel->get_grad_influence(point);
+        infl = panel->get_grad_influence(p);
         q += std::get<0>(infl) * this->sol[i] - std::get<1>(infl);
-        return Vector(q.x() - point.y(), q.y() + point.x());
+        return Vector(q.x() - p.y(), q.y() + p.x());
         i++;
     }
 }
