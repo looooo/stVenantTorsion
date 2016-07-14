@@ -1,6 +1,8 @@
 # stVenantTorsion
-![ellipse](./images/ellipse.png)   
-__compute torsional-stiffness with BEM/ FEM__
+__compute torsional-stiffness with BEM/ FEM__   
+
+![ellipse](./images/ellipse.png)  
+ 
 ## Build
 ### Dependencies
 
