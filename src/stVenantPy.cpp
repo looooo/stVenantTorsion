@@ -69,7 +69,7 @@ void init_stVenant(py::module &m)
         .def("get_w", &TorsionFemCase::get_w)
         .def("get_stress", &TorsionFemCase::get_stress)
         .def("run", &TorsionFemCase::run)
-        .def_readwrite("bc", &TorsionFemCase::bc);
+        .def_static("bc", &TorsionFemCase::bc);
 };
 
 
