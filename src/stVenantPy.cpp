@@ -68,7 +68,8 @@ void init_stVenant(py::module &m)
         .def("get_torsion_moment", &TorsionFemCase::get_torsion_moment)
         .def("get_w", &TorsionFemCase::get_w)
         .def("get_stress", &TorsionFemCase::get_stress)
-        .def("run", &TorsionFemCase::run);
+        .def("run", &TorsionFemCase::run)
+        .def("bc", &TorsionFemCase::bc);
 };
 
 

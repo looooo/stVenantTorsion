@@ -22,12 +22,13 @@ struct Triangle
 
     Triangle(Vector, Vector, Vector, std::array<int, 3>);
     Vector get_grad(const Eigen::VectorXd & sol);
-    void add_fem_equation(std::vector<Eigen::Triplet< double>>& K_g, Eigen::VectorXd & rhs_g);
+    void add_fem_equation(std::vector<Eigen::Triplet< double>>& K_g, Eigen::VectorXd & rhs_g, Vector (*bc) (Vector));
 };
 
 
 struct TorsionFemCase
 {
+    static Vector bc(Vector center);
     std::vector<Triangle> triangles;
     int mat_size;
     Eigen::VectorXd sol;

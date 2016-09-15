@@ -24,12 +24,12 @@ Triangle::Triangle(Vector a, Vector b, Vector c, std::array< int, int(3) > indic
     this->B = J.inverse() * B_eta;
 }
 
-void Triangle::add_fem_equation(std::vector< Eigen::Triplet< double > >& K_g, Eigen::VectorXd & rhs_g)
+void Triangle::add_fem_equation(std::vector< Eigen::Triplet< double > >& K_g, Eigen::VectorXd & rhs_g, Vector (*bc) (Vector))
 {
     Eigen::Matrix<double, 3, 3> K_l;
     Eigen::Matrix<double, 3, 1> rhs_l;
     K_l = (this->B.transpose() * this->B) * this->area;
-    rhs_l = this->area * this->B.transpose() * Vector(this->center.y(), - this->center.x());
+    rhs_l = - this->area * this->B.transpose() * bc(this->center);//Vector(this->center.y(), - this->center.x());
     int row_l, col_l = 0;
     for (int row_g: this->indices)
     {
@@ -77,7 +77,7 @@ void TorsionFemCase::run()
     std::vector<Eigen::Triplet<double>> mat_entries;
     for (auto triangle: this->triangles)
     {
-        triangle.add_fem_equation(mat_entries, rhs);
+        triangle.add_fem_equation(mat_entries, rhs, this->bc);
     }
 //     fixing w at one position
     mat_entries.push_back(Eigen::Triplet<double>(1, 0, 0));
@@ -103,8 +103,9 @@ double TorsionFemCase::get_torsion_moment()
     {
         Vector grad_w = triangle.get_grad(this->sol);
         torsion_moment += triangle.center.dot(triangle.center) * triangle.area;
-        torsion_moment -= triangle.center.y() * grad_w.x() * triangle.area;
-        torsion_moment += triangle.center.x() * grad_w.y() * triangle.area;
+        torsion_moment += this->bc(triangle.center).dot(grad_w) * triangle.area;
+        // torsion_moment -= triangle.center.y() * grad_w.x() * triangle.area;
+        // torsion_moment += triangle.center.x() * grad_w.y() * triangle.area;
     }
     return torsion_moment;
 }
@@ -115,10 +116,13 @@ std::vector< std::array< double, 2> > TorsionFemCase::get_stress()
     for (auto triangle : this->triangles)
     {
         Vector grad_w = triangle.get_grad(this->sol);
+        Vector bc = this->bc(triangle.center);
 
         std::array<double, 2> temp;
-        temp[0] = - triangle.center.y() + grad_w.x();
-        temp[1] =   triangle.center.x() + grad_w.y();
+        temp[0] = + bc.x() + grad_w.x();
+        temp[1] = + bc.y() + grad_w.y();
+        // temp[0] = - triangle.center.y() + grad_w.x();
+        // temp[1] =  triangle.center.x() + grad_w.y();
         stress.push_back(temp);
     }
     return stress;
@@ -134,3 +138,7 @@ std::vector< double > TorsionFemCase::get_w()
     return w;
 }
 
+Vector TorsionFemCase::bc(Vector center)
+{
+    return Vector(-center.y(), + center.x());
+}
