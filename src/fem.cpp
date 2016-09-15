@@ -115,9 +115,10 @@ std::vector< std::array< double, 2> > TorsionFemCase::get_stress()
     for (auto triangle : this->triangles)
     {
         Vector grad_w = triangle.get_grad(this->sol);
+
         std::array<double, 2> temp;
-        temp[0] = grad_w.x();
-        temp[1] = grad_w.y();
+        temp[0] = - triangle.center.y() + grad_w.x();
+        temp[1] =   triangle.center.x() + grad_w.y();
         stress.push_back(temp);
     }
     return stress;
