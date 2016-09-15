@@ -3,6 +3,7 @@ import stVenant
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
+import paraEigen as eigen
 
 
 circle_phi = np.linspace(0, 2 * np.pi, 50)[0:-1]
@@ -42,6 +43,9 @@ mesh_points = list(mesh.points)
 triangles = list(mesh.elements)
 
 femCase = stVenant.TorsionFemCase(mesh_points, triangles)
+def bc(v):
+	return eigen.vector2(1, 0)
+femCase.bc = bc
 femCase.run()
 
 
