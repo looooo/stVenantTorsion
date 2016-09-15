@@ -138,7 +138,12 @@ std::vector< double > TorsionFemCase::get_w()
     return w;
 }
 
+// Vector TorsionFemCase::bc(Vector center)
+// {
+//     return Vector(-center.y(), + center.x());
+// }
+
 Vector TorsionFemCase::bc(Vector center)
 {
-    return Vector(-center.y(), + center.x());
+    return Vector(1, 0);
 }
