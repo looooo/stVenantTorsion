@@ -80,7 +80,7 @@ void TorsionFemCase::run()
         triangle.add_fem_equation(mat_entries, rhs, this->bc);
     }
 //     fixing w at one position
-    mat_entries.push_back(Eigen::Triplet<double>(1, 0, 0));
+    mat_entries.push_back(Eigen::Triplet<double>(0, 0, 0));
     rhs[0] = 0;
     mat.setFromTriplets(mat_entries.begin(), mat_entries.end());
     Eigen::ConjugateGradient<Eigen::SparseMatrix<double> > cg;
@@ -116,11 +116,11 @@ std::vector< std::array< double, 2> > TorsionFemCase::get_stress()
     for (auto triangle : this->triangles)
     {
         Vector grad_w = triangle.get_grad(this->sol);
-        Vector bc = this->bc(triangle.center);
+        Vector _bc = this->bc(triangle.center);
 
         std::array<double, 2> temp;
-        temp[0] = + bc.x() + grad_w.x();
-        temp[1] = + bc.y() + grad_w.y();
+        temp[0] = + _bc.x() + grad_w.x();
+        temp[1] = + _bc.y() + grad_w.y();
         // temp[0] = - triangle.center.y() + grad_w.x();
         // temp[1] =  triangle.center.x() + grad_w.y();
         stress.push_back(temp);

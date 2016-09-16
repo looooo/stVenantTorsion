@@ -43,9 +43,6 @@ mesh_points = list(mesh.points)
 triangles = list(mesh.elements)
 
 femCase = stVenant.TorsionFemCase(mesh_points, triangles)
-def bc(v):
-	return eigen.vector2(1, 0)
-femCase.bc = bc
 femCase.run()
 
 
