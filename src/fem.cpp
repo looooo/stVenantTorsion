@@ -80,7 +80,7 @@ void TorsionFemCase::run()
         triangle.add_fem_equation(mat_entries, rhs, this->bc);
     }
 //     fixing w at one position
-    mat_entries.push_back(Eigen::Triplet<double>(0, 0, 0));
+    mat_entries.push_back(Eigen::Triplet<double>(0, 0, 1));
     rhs[0] = 0;
     mat.setFromTriplets(mat_entries.begin(), mat_entries.end());
     Eigen::ConjugateGradient<Eigen::SparseMatrix<double> > cg;
